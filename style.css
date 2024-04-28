@@ -85,7 +85,7 @@ img {
 #header .header-bottom {
   height: 100vh;
   background: linear-gradient(rgba(0, 0, 0, 0.1), #0b0d19),
-    url(assets/wb.png);
+  url(assets/wb.png);
   background-size: cover;
   background-position: center;
   color: #fff;
