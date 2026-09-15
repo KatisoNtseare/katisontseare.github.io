@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Campus Safety Companion Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="prototype-card" aria-label="Campus Safety Companion interactive prototype">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">SIH3010 • Team 1</p>
+          <h1>Campus Safety Companion</h1>
+        </div>
+        <span class="demo-pill">Prototype</span>
+      </header>
+
+      <div class="notice" role="note">
+        This is an academic prototype only. It is not an official NMU emergency system and does not contact real responders.
+      </div>
+
+      <section class="screen active" data-screen="home">
+        <h2>What do you need help with?</h2>
+        <p class="muted">Choose an option below.</p>
+        <div class="action-grid">
+          <button class="action danger" data-target="assist">Request assistance</button>
+          <button class="action warning" data-target="report">Report incident</button>
+          <button class="action" data-target="status">View status</button>
+          <button class="action success" data-target="contacts">Safety contacts</button>
+        </div>
+        <div class="secondary-grid">
+          <button data-target="officer">Officer demo</button>
+          <button data-target="admin">Admin demo</button>
+          <button data-target="settings">Settings</button>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="assist">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Request assistance</h2>
+        <p class="muted">Three short steps: category, location, review.</p>
+        <form id="assistForm">
+          <label>Assistance category
+            <select id="assistCategory">
+              <option value="">Select a category</option>
+              <option>Harassment / personal safety</option>
+              <option>Medical concern</option>
+              <option>Suspicious activity</option>
+              <option>Unsafe area</option>
+            </select>
+          </label>
+          <label>Campus area / building
+            <select id="assistLocationSelect">
+              <option value="">Select an area</option>
+              <option>North Campus - Main Library</option>
+              <option>South Campus - Student Centre</option>
+              <option>Residence Area - Block R</option>
+              <option value="manual">Other / manual location</option>
+            </select>
+          </label>
+          <label id="manualAssistWrap" class="hidden">Manual location description
+            <input id="assistManualLocation" type="text" placeholder="e.g. near the main gate" />
+          </label>
+          <label>Short description <span class="optional">(optional)</span>
+            <textarea id="assistDescription" rows="3" placeholder="Briefly describe what is happening"></textarea>
+          </label>
+          <p id="assistError" class="error" aria-live="polite"></p>
+          <button type="submit" class="primary danger">Review request</button>
+          <button type="button" id="simulateFailure" class="ghost">Simulate connection failure</button>
+        </form>
+      </section>
+
+      <section class="screen" data-screen="assist-review">
+        <button class="back" data-target="assist">← Edit</button>
+        <h2>Review request</h2>
+        <div class="summary-card">
+          <p><strong>Category:</strong> <span id="reviewCategory"></span></p>
+          <p><strong>Location:</strong> <span id="reviewLocation"></span></p>
+          <p><strong>Description:</strong> <span id="reviewDescription"></span></p>
+        </div>
+        <div class="privacy-note">Only fictional/simulated information is used in this prototype. No real alert will be sent.</div>
+        <button id="confirmAssist" class="primary danger">Submit simulated request</button>
+      </section>
+
+      <section class="screen" data-screen="confirmation">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <h2>Request submitted</h2>
+        <p>Your simulated request was recorded.</p>
+        <div class="summary-card">
+          <p><strong>Reference:</strong> <span id="confirmReference"></span></p>
+          <p><strong>Time:</strong> <span id="confirmTime"></span></p>
+          <p><strong>Status:</strong> <span class="status submitted">Submitted</span></p>
+        </div>
+        <button class="primary" data-target="status">View status</button>
+        <button class="ghost" data-target="home">Return home</button>
+      </section>
+
+      <section class="screen" data-screen="report">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Report incident or hazard</h2>
+        <form id="reportForm">
+          <label>Incident category
+            <select id="reportCategory" required>
+              <option value="">Select a category</option>
+              <option>Hazard / unsafe facility</option>
+              <option>Theft / property concern</option>
+              <option>Harassment</option>
+              <option>Suspicious activity</option>
+            </select>
+          </label>
+          <label>Description
+            <textarea id="reportDescription" rows="4" required placeholder="Describe what happened"></textarea>
+          </label>
+          <label>Location
+            <input id="reportLocation" type="text" required placeholder="Building, area or landmark" />
+          </label>
+          <label>Evidence note <span class="optional">(optional)</span>
+            <input id="evidenceNote" type="text" placeholder="e.g. photo available" />
+          </label>
+          <label class="check-row"><input id="restrictedVisibility" type="checkbox" /> Request restricted visibility</label>
+          <small>Authorised safety personnel may still access restricted reports.</small>
+          <p id="reportError" class="error" aria-live="polite"></p>
+          <button class="primary warning" type="submit">Submit simulated report</button>
+        </form>
+      </section>
+
+      <section class="screen" data-screen="report-confirmation">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <h2>Report submitted</h2>
+        <p><strong>Reference:</strong> <span id="reportReference"></span></p>
+        <p><strong>Status:</strong> <span class="status submitted">Submitted</span></p>
+        <button class="primary" data-target="home">Done</button>
+      </section>
+
+      <section class="screen" data-screen="status">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Request status</h2>
+        <div id="noRequestState" class="empty-state">No active simulated assistance request yet.</div>
+        <div id="requestState" class="hidden">
+          <div class="summary-card">
+            <p><strong>Reference:</strong> <span id="statusReference"></span></p>
+            <p><strong>Category:</strong> <span id="statusCategory"></span></p>
+            <p><strong>Location:</strong> <span id="statusLocation"></span></p>
+            <p><strong>Current status:</strong> <span id="statusValue" class="status submitted">Submitted</span></p>
+          </div>
+          <ol id="statusHistory" class="timeline"></ol>
+          <button id="cancelRequest" class="ghost danger-text">Cancel active request</button>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="fallback">
+        <button class="back" data-target="assist">← Try again</button>
+        <div class="alert-icon" aria-hidden="true">!</div>
+        <h2>Not sent / Unavailable</h2>
+        <p>The prototype could not submit the simulated request. No reference number was created.</p>
+        <div class="fallback-box">For a real emergency, use verified official university or public emergency contact channels. This prototype does not dispatch help.</div>
+        <button class="primary" data-target="contacts">View safety contacts</button>
+      </section>
+
+      <section class="screen" data-screen="contacts">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Safety contacts & guidance</h2>
+        <div class="contact-card"><strong>Campus Safety</strong><span>Verified contact placeholder</span></div>
+        <div class="contact-card"><strong>Medical assistance</strong><span>Official-contact placeholder</span></div>
+        <div class="contact-card"><strong>General safety guidance</strong><span>Move to a safe, public place and follow official university procedures.</span></div>
+        <p class="muted">Contact details are placeholders because this is a design prototype.</p>
+      </section>
+
+      <section class="screen" data-screen="officer">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Officer incoming queue</h2>
+        <div class="toolbar"><input id="queueSearch" type="search" placeholder="Search reference or category" /><select id="queueFilter"><option>All statuses</option><option>Submitted</option><option>Under Review</option><option>Closed</option></select></div>
+        <div class="queue-item"><div><strong>SAFE-1042</strong><span>Suspicious activity • Main Library</span></div><button data-target="officer-case">Open</button></div>
+        <div class="queue-item"><div><strong>SAFE-1041</strong><span>Unsafe area • Residence Block R</span></div><span class="status review">Under Review</span></div>
+      </section>
+
+      <section class="screen" data-screen="officer-case">
+        <button class="back" data-target="officer">← Queue</button>
+        <h2>Officer case update</h2>
+        <div class="summary-card"><p><strong>Reference:</strong> SAFE-1042</p><p><strong>Category:</strong> Suspicious activity</p><p><strong>Location:</strong> Main Library</p></div>
+        <label>Status<select id="officerStatus"><option>Submitted</option><option>Under Review</option><option>Assigned</option><option>Closed</option></select></label>
+        <label>Assign campus unit<input id="officerUnit" value="Campus Safety" /></label>
+        <label>Internal note<textarea id="officerNote" rows="3" placeholder="Add follow-up note"></textarea></label>
+        <label class="check-row"><input id="escalationDecision" type="checkbox" /> Record internal escalation decision</label>
+        <small>This records only an internal decision. No external service is contacted.</small>
+        <button id="saveOfficerUpdate" class="primary">Save simulated update</button>
+        <p id="officerSaved" class="success-text" aria-live="polite"></p>
+      </section>
+
+      <section class="screen" data-screen="admin">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Admin content & categories</h2>
+        <div class="admin-row"><span>Harassment / personal safety</span><span class="status submitted">Active</span></div>
+        <div class="admin-row"><span>Medical concern</span><span class="status submitted">Active</span></div>
+        <div class="admin-row"><span>Verified safety guidance</span><button>Edit</button></div>
+        <button class="primary" data-target="dashboard">View summary dashboard</button>
+      </section>
+
+      <section class="screen" data-screen="dashboard">
+        <button class="back" data-target="admin">← Admin</button>
+        <h2>Summary dashboard</h2>
+        <p class="muted">Fictional aggregate data only.</p>
+        <div class="metrics"><div><strong>24</strong><span>Total reports</span></div><div><strong>7</strong><span>Open</span></div><div><strong>17</strong><span>Closed</span></div></div>
+        <div class="bar-chart" aria-label="Fictional reports by category"><div><span>Hazard</span><i style="--w:78%"></i></div><div><span>Safety</span><i style="--w:56%"></i></div><div><span>Theft</span><i style="--w:38%"></i></div></div>
+      </section>
+
+      <section class="screen" data-screen="settings">
+        <button class="back" data-target="home">← Home</button>
+        <h2>Settings</h2>
+        <label class="toggle-row"><span>Large text</span><input id="largeTextToggle" type="checkbox" /></label>
+        <label class="toggle-row"><span>Reduced motion</span><input id="motionToggle" type="checkbox" /></label>
+        <div class="privacy-note">Accessibility settings affect only this prototype in your browser.</div>
+      </section>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
